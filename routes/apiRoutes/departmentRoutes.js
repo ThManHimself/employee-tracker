@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../db/connection');
-const validateEntry = require('../../untis/validateEntry');
+const validateEntry = require('../../utils/validateEntry');
 
 // Get all departments
 router.get('/departments', (req, res)=>{
