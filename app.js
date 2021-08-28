@@ -35,7 +35,9 @@ function appStart() {
             getRoles();
         } else if (response.answer === 'View All Employees') {
             getEmployees();
-        }
+        } else if (response.answer === 'Add a Department') {
+            addDepartment();
+        } 
     })
 };
 
@@ -76,4 +78,26 @@ function getEmployees() {
         }
     );
     appStart();
+}
+
+function addDepartment() {
+
+    return inquirer.prompt([
+        {
+            type: 'input',
+            name: 'deptName',
+            message: 'Department name: ',
+        }
+    ])
+    .then(answer =>{
+        sql = `INSERT INTO departments (name) VALUES (?)`;
+        db.query(sql, answer.deptName, (err, res)=>{
+                if (err) throw err;
+
+                console.log(answer.deptName + `Department created!`);
+                getDepartments();
+            }
+        );
+        appStart();
+    })
 }
