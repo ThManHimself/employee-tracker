@@ -37,7 +37,9 @@ function appStart() {
             getEmployees();
         } else if (response.answer === 'Add a Department') {
             addDepartment();
-        } 
+        } else if (response.answer === 'Add a Role') {
+            addRole();
+        }
     })
 };
 
@@ -90,14 +92,43 @@ function addDepartment() {
         }
     ])
     .then(answer =>{
-        sql = `INSERT INTO departments (name) VALUES (?)`;
+        const sql = `INSERT INTO departments (name) VALUES (?)`;
         db.query(sql, answer.deptName, (err, res)=>{
-                if (err) throw err;
+            if (err) throw err;
 
-                console.log(answer.deptName + `Department created!`);
-                getDepartments();
-            }
-        );
-        appStart();
+            console.log(`Department created!`);
+            getDepartments();
+        });
+    })
+}
+
+function addRole() {
+    
+    return inquirer.prompt([
+        {
+            type: 'input',
+            name: 'newRole',
+            message: 'Role name:'
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'New role salary:'
+        },
+        {
+            type: 'input',
+            name: 'departmentId',
+            message: 'Which department does this role belong to?(1 = Sales, 2 = Engineering, 3 = Finance, 4 = Legal)',
+        }
+    ])
+    .then(answer=>{
+        const sql = `INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`;
+        const params = [answer.newRole, answer.salary, answer.departmentId];
+        db.query(sql, params, (err, res)=>{
+            if (err) throw err;
+
+            console.log(`Role created!`);
+            getRoles();
+        });
     })
 }
