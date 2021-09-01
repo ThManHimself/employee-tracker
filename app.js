@@ -4,6 +4,7 @@ const { validate, EXPORTDECLARATION_TYPES } = require('@babel/types');
 const fs = require('fs');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
+const { exit } = require('yargs');
 
 var db = mysql.createConnection({
     host: 'localhost',
@@ -26,7 +27,7 @@ function appStart() {
             type: 'list',
             name: 'answer',
             message: 'What would you like to do?',
-            choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', "Update an Employee's Role"]
+            choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add an Employee', "Update an Employee's Role", 'exit']
         }
     ])
     .then(response =>{
@@ -42,7 +43,12 @@ function appStart() {
             addRole();
         } else if (response.answer === 'Add an Employee') {
             addEmployee();
+        } else if (response.answer === "Update an Employee's Role") {
+            updateEmployee();
         }
+        // else {
+        //     break;
+        // }
     })
 };
 
@@ -204,3 +210,100 @@ function addEmployee() {
         })
     })
 }
+
+function updateEmployee(){
+    let employeesArray;
+    let rolesArray;
+    return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'employeeToUpdate',
+            message: 'Which employee would you like to update?',
+            choices: employeesArray
+        },
+        {
+            type: 'list',
+            name: 'updatedRole',
+            message: 'What is their new role?',
+            choices: rolesArray
+        }
+    ])
+    .then(answer =>{
+        const sql = `UPDATE employees
+            SET `
+    })
+}
+
+// function updateEmployee() {
+//     let sql = `
+//         SELECT employees.id, employees.first_name, employees.last_name, role_id AS "role_id"
+//         FROM employees, roles, departments
+//         WHERE departments.id = roles.department_id AND roles.id = employees.role_id
+//         `;
+//     db.query(sql, (err, res)=>{
+//         if (err) throw err;
+//         let employeesArray = [];
+//         let rolesArray = [];
+//         res.forEach((employee) => {
+//             employeesArray.push(`${employee.first_name} ${employee.last_name}`);
+//         });
+
+//         let sql = `SELECT roles.id, roles.title FROM roles`;
+//         db.query(sql, (err, res)=>{
+//             if (err) throw err;
+//             res.forEach((role) =>{
+//                 rolesArray.push(role.title);
+//             });
+//         });
+
+//         inquirer.prompt([
+            // {
+            //     type: 'list',
+            //     name: 'employeeToUpdate',
+            //     message: 'Which employee would you like to update?',
+            //     choices: employeesArray
+            // },
+            // {
+            //     type: 'list',
+            //     name: 'updatedRole',
+            //     message: 'What is their new role?',
+            //     choices: rolesArray
+            // }
+//         ])
+//         .then((answer)=>{
+//             makeChanges(answer);
+//         });
+//     })
+// }
+
+// function makeChanges() {
+//     let updatedTitleId;
+//     let employeeId;
+    
+//     res.forEach((role)=>{
+//         if (answer.updatedRole === role.title) {
+//             updatedTitleId = role.id;
+//         }
+//     });
+    
+//     res.forEach((employee)=>{
+//         if (answer.employeeToUpdate === `${employee.first_name} ${employee.last_name}`) {
+//             employeeId = employee.id;
+//         }
+//     });
+    
+//     let sql = `
+//     UPDATE employees
+//     SET employees.role_id = ?
+//     WHERE employees.id = ?
+//     `;
+//     db.query(sql, [updatedTitleId, employeeId], (err)=>{
+//         if(err) throw err;
+//         console.log(`Employee Role Updated!`);
+//         appStart();
+//     });
+// }
+
+// function exit() {
+//     break;
+// }
