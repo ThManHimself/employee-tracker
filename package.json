@@ -9,9 +9,6 @@
     "inquirer": "^8.1.2",
     "mysql2": "^2.3.0"
   },
-  "devDependencies": {
-    "jest": "^27.0.6"
-  },
   "scripts": {
     "test": "jest",
     "start": "node server.js"

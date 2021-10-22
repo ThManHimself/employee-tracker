@@ -1,3 +1,5 @@
+// Varifies if data entered is valid data.
+// If it is not, send an error and let the user know
 module.exports = function(obj, ...props) {
     const errors = [];
 
